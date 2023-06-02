@@ -48,10 +48,10 @@ class Phone(Field):
     def value(self):
         return self.__private_value
 
-    @value.setter
-    def value(self, new_value):
-        if new_value.isdigit():
-            self.__private_value = new_value
+     @value.setter
+     def value(self, new_value):
+        if (''.join(new_value.split())).isdigit() or (new_value[0] == '+' and (''.join(new_value.split()))[1:].isdigit()):
+            self.__private_value = (''.join(new_value.split()))
         else:
             raise NumberPhoneError('Enter correct number phone')
 
