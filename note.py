@@ -3,6 +3,9 @@ class Note:
         self.note = note
         self.tags = tags
 
+    def __repr__(self) -> str:
+        return f"{self.note}"
+
     def __str__(self):
         return f"Note: {self.note}"
 
@@ -25,6 +28,9 @@ class NoteManager:
         self.notes = {}
 
     def __str__(self) -> str:
+        return f"{self.notes}"
+
+    def __repr__(self) -> str:
         return f"{self.notes}"
 
     def add_notes(self, note, tags):
