@@ -57,22 +57,53 @@ def parcer(user_input):
 def hello():  # функция приветствия
     return f'How can I help you?'
 
-
+#функция добавления контакта и его данных
 @input_error
-def add_phone(name, phone):  # функция добавления/сохранения номера телефона  контакта
-    name = Name(name.title())
-    phone = Phone(phone)
-    record = Record(name.value)
+def add_data():
+    name = input('Name: ')
+    name_data = Name(name.title())
+    record = Record(name_data.value)
+    phone = input('Phohe: ')
+    phone_data = Phone(phone)
+    record.add_phone(phone_data.value)
+    birthday = input('Birthday(enter data in format dd-mm-year): ')
+    record.add_birthday(birthday)
+    email = input('Email: ')
+    record.add_email(email)
+    adress = input('Adress: ')
+    record.add_adress(adress)
     contact = AddressBook()
-    record.add_phone(phone.value)
     contact.add_record(record)
     for cont in contacts_data:
-        if name.value == cont['name']:
-            cont['phone'].append(phone.value)
+        if name_data.value == cont['name']:
+            if phone != '':
+                cont['phone'].append(phone_data.value)
+            if birthday != '':
+                cont['birthday'] = birthday
+            if email != '':
+                cont['email'] = email
+            if adress != '':
+                cont['adress'] = adress  
             return f'Contact added successfully\nHow can I help you?'
 
     contacts_data.append(contact)
     return f'Contact added successfully\nHow can I help you?'
+
+# @input_error
+# def add_phone(name, phone):  # функция добавления/сохранения номера телефона  контакта
+#     name = Name(name.title())
+#     phone = Phone(phone)
+#     record = Record(name.value)
+#     contact = AddressBook()
+#     record.add_phone(phone.value)
+#     contact.add_record(record)
+#     for cont in contacts_data:
+#         if name.value == cont['name']:
+#             cont['phone'].append(phone.value)
+#             return f'Contact added successfully\nHow can I help you?'
+
+#     contacts_data.append(contact)
+#     return f'Contact added successfully\nHow can I help you?'
 
 
 @input_error
@@ -95,54 +126,54 @@ def phone(name):  # функция для показа  номера телеф�
     raise KeyError
 
 
-@input_error
-# функция для добавления дня рождения контакта
-def add_birthday(name, birthday):
-    name = Name(name.title())
-    record = Record(name.value)
-    record.add_birthday(birthday)
-    contact = AddressBook()
-    contact.add_record(record)
-    for cont in contacts_data:
-        if name.value == cont['name']:
-            cont['birthday'] = birthday
-            return f'Contact birthday added successfully\nHow can I help you?'
+# @input_error
+# # функция для добавления дня рождения контакта
+# def add_birthday(name, birthday):
+#     name = Name(name.title())
+#     record = Record(name.value)
+#     record.add_birthday(birthday)
+#     contact = AddressBook()
+#     contact.add_record(record)
+#     for cont in contacts_data:
+#         if name.value == cont['name']:
+#             cont['birthday'] = birthday
+#             return f'Contact birthday added successfully\nHow can I help you?'
 
-    contacts_data.append(contact)
-    return f'Contact birthday added successfully\nHow can I help you?'
-
-
-@input_error
-def add_email(name, email):  # функция для добавления email контакта
-    name = Name(name.title())
-    record = Record(name.value)
-    record.add_email(email)
-    contact = AddressBook()
-    contact.add_record(record)
-    for cont in contacts_data:
-        if name.value == cont['name']:
-            cont['email'] = email
-            return f'Contact email added successfully\nHow can I help you?'
-
-    contacts_data.append(contact)
-    return f'Contact email added successfully\nHow can I help you?'
+#     contacts_data.append(contact)
+#     return f'Contact birthday added successfully\nHow can I help you?'
 
 
-@input_error
-# функция для добавления адреса контакта
-def add_adress(name, adress):
-    name = Name(name.title())
-    record = Record(name.value)
-    record.add_adress(adress.title())
-    contact = AddressBook()
-    contact.add_record(record)
-    for cont in contacts_data:
-        if name.value == cont['name']:
-            cont['adress'] = adress.title()
-            return f'Contact adress added successfully\nHow can I help you?'
+# @input_error
+# def add_email(name, email):  # функция для добавления email контакта
+#     name = Name(name.title())
+#     record = Record(name.value)
+#     record.add_email(email)
+#     contact = AddressBook()
+#     contact.add_record(record)
+#     for cont in contacts_data:
+#         if name.value == cont['name']:
+#             cont['email'] = email
+#             return f'Contact email added successfully\nHow can I help you?'
 
-    contacts_data.append(contact)
-    return f'Contact adress added successfully\nHow can I help you?'
+#     contacts_data.append(contact)
+#     return f'Contact email added successfully\nHow can I help you?'
+
+
+# @input_error
+# # функция для добавления адреса контакта
+# def add_adress(name, adress):
+#     name = Name(name.title())
+#     record = Record(name.value)
+#     record.add_adress(adress.title())
+#     contact = AddressBook()
+#     contact.add_record(record)
+#     for cont in contacts_data:
+#         if name.value == cont['name']:
+#             cont['adress'] = adress.title()
+#             return f'Contact adress added successfully\nHow can I help you?'
+
+#     contacts_data.append(contact)
+#     return f'Contact adress added successfully\nHow can I help you?'
 
 
 @input_error
@@ -192,10 +223,10 @@ def search(search):  # функция  для поиска  данных в ад
 
 
 # словарь для хранения  имен функций обработчиков команд:
-command_func = {'hello': hello, 'add': add_phone, 'change': change,
+command_func = {'hello': hello, 'add': add_data, 'change': change,
                 'phone': phone, 'show all': show_all, 'exit': exit,
-                'save': save_contacts, 'search': search, 'birthday': add_birthday,
-                'email': add_email, 'adress': add_adress, 'read': read_contacts}
+                'save': save_contacts, 'search': search, 'read': read_contacts}#, 'birthday': add_birthday,
+                #'email': add_email, 'adress': add_adress,}
 
 # главная функция:
 
