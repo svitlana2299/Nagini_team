@@ -50,7 +50,9 @@ class Phone(Field):
 
     @value.setter
     def value(self, new_value):
-        if (''.join(new_value.split())).isdigit() or (new_value[0] == '+' and (''.join(new_value.split()))[1:].isdigit()):
+        if new_value == '':
+            self.__private_value = (''.join(new_value.split()))
+        elif (''.join(new_value.split())).isdigit() or (new_value[0] == '+' and (''.join(new_value.split()))[1:].isdigit()):
             self.__private_value = (''.join(new_value.split()))
         else:
             raise NumberPhoneError('Enter correct number phone')
@@ -71,7 +73,9 @@ class Birthday:
     @birthday.setter
     def birthday(self, new_birthday):
         try:
-            if datetime.strptime(str(new_birthday), '%d-%m-%Y'):
+            if new_birthday == '':
+                self.__private_birthday = new_birthday
+            elif datetime.strptime(str(new_birthday), '%d-%m-%Y'):
                 self.__private_birthday = new_birthday
         except ValueError:
             raise BirthdayError('Enter correct date')
@@ -95,12 +99,15 @@ class Email:
     @email.setter
     def email(self, new_email):
         try:
-            mail = bool(
-                re.search(r"[a-zA-Z]+[\w\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}", new_email))
-            if mail:
+            if new_email == '':
                 self.__private_email = new_email
             else:
-                raise EmailError('Enter correct email')
+                mail = bool(
+                    re.search(r"[a-zA-Z]+[\w\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}", new_email))
+                if mail:
+                    self.__private_email = new_email
+                else:
+                    raise EmailError('Enter correct email')
         except ValueError:
             raise EmailError('Enter correct email')
 
@@ -120,12 +127,15 @@ class Adress:
     @adress.setter
     def adress(self, new_adress):
         try:
-            adr = bool(
-                re.search(r'^[A-Za-z0-9\s.,-]+ \d+[A-Za-z]* [A-Za-z\s]+$', new_adress))
-            if adr:
+            if new_adress == '':
                 self.__private_adress = new_adress
             else:
-                raise AdressError('Enter correct adress')
+                adr = bool(
+                    re.search(r'^[A-Za-z0-9\s.,-]+ \d+[A-Za-z]* [A-Za-z\s]+$', new_adress))
+                if adr:
+                    self.__private_adress = new_adress
+                else:
+                    raise AdressError('Enter correct adress')
         except ValueError:
             raise AdressError('Enter correct adress')
 
@@ -145,7 +155,8 @@ class Record:
         return f'{self.name}, {self.birthday}'
 
     def add_phone(self, phone: Phone):
-        self.phones.append(phone)
+        if phone != '':
+            self.phones.append(phone)
 
     def delete_phone(self, phone: Phone):
         for p in self.phones:
