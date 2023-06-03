@@ -3,6 +3,7 @@ class Note:
         self.note = note
         self.tags = tags
 
+
     def __repr__(self) -> str:
         return f"{self.note}"
 
