@@ -33,7 +33,7 @@ class Name(Field):
 
     @value.setter
     def value(self, new_value):
-        if new_value.isalpha():
+        if new_value != '':
             self.__private_value = new_value
         else:
             raise KeyError('Enter correct user name')

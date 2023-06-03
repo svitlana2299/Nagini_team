@@ -20,21 +20,21 @@ def input_error(func):
             result = func(*args)
             return result
         except KeyError:
-            return f'Enter correct user name'
+            return f'Name can not empty, please repeat the command and enter correct user name, or enter next command'
         except ValueError:
             return f'You have entered an invalid command, please refine your query'
         except IndexError:
             return f'Give me name and phone please'
         except NumberPhoneError:
-            return f'Enter correct number phone'
+            return f'This number phone is not correct, please repeat the command and enter correct number phone, or enter next command'
         except FileNotFoundError:
             return f'Please first enter and save the data'
         except BirthdayError:
-            return f'Enter correct date'
+            return f'This date is not format, please repeat the command and enter correct date, or enter next command'
         except EmailError:
-            return f'Enter correct email'
+            return f'This email is not correct, please repeat the command and enter correct email, or enter next command'
         except AdressError:
-            return f'Enter correct adress'
+            return f'This adress is not format, please repeat the command and enter correct adress, or enter next command'
 
     return inner
 
@@ -63,15 +63,15 @@ def add_data():
     name = input('Name: ')
     name_data = Name(name.title())
     record = Record(name_data.value)
-    phone = input('Phohe: ')
+    phone = input("Phohe(add data in format '+38 number fhone' or 'number phone'): ")
     phone_data = Phone(phone)
     record.add_phone(phone_data.value)
-    birthday = input('Birthday(enter data in format dd-mm-year): ')
+    birthday = input('Birthday(enter data in the format dd-mm-year): ')
     record.add_birthday(birthday)
     email = input('Email: ')
     record.add_email(email)
-    adress = input('Adress: ')
-    record.add_adress(adress)
+    adress = input('Adress(enter data in the format "name street" "number building" "name town"): ')
+    record.add_adress(adress.title())
     contact = AddressBook()
     contact.add_record(record)
     for cont in contacts_data:
@@ -83,7 +83,7 @@ def add_data():
             if email != '':
                 cont['email'] = email
             if adress != '':
-                cont['adress'] = adress  
+                cont['adress'] = adress.title()  
             return f'Contact added successfully\nHow can I help you?'
 
     contacts_data.append(contact)
@@ -232,7 +232,7 @@ command_func = {'hello': hello, 'add': add_data, 'change': change,
 
 
 def main():
-    print('Hi, I am a contact book helper bot!\n\nI understand these commands:\n"add name phone" - add a new contact to the book, instead of name and phone, enter the username and phone number, separated by a space.\n"change name phone" - change contact phone number, instead of name and phone, enter the username and phone number, separated by a space.\n"phone name" - show contact phone number, instead of name enter the username.\n"birthday name data" - add/change data birthday contact, instead of name and data, enter the username and birthday in format month-day-year,separated by a space.\n"email name data" - add/change email contact, instead of name and data, enter the username and email,separated by a space\n"adress name data" - add/change adress contact, instead of name and data, enter the username and adress in format "name street" "number building" "name town",separated by a space.\n"show all" - show all contacts\n"save" - save data to file csv.\n"read" - read data from file csv.\n"search contact" - search for contacts,instead of a contact, enter a request (name / part of a name or phone number / part of a phone number).\n"hello" - for start bot.\n"good bye" or "close" or "exit" or "." - for finish bot.\n')
+    print('Hi, I am a contact book helper bot!\n\nI understand these commands:\n"add name phone" - add a new contact to the book, instead of name and phone, enter the username and phone number, separated by a space.\n"change name phone" - change contact phone number, instead of name and phone, enter the username and phone number, separated by a space.\n"phone name" - show contact phone number, instead of name enter the username.\n"birthday name data" - add/change data birthday contact, instead of name and data, enter the username and birthday in format month-day-year,separated by a space.\n"email name data" - add/change email contact, instead of name and data, enter the username and email,separated by a space\n"adress name data" - add/change adress contact, instead of name and data, enter the username and adress in the format "name street" "number building" "name town",separated by a space.\n"show all" - show all contacts\n"save" - save data to file csv.\n"read" - read data from file csv.\n"search contact" - search for contacts,instead of a contact, enter a request (name / part of a name or phone number / part of a phone number).\n"hello" - for start bot.\n"good bye" or "close" or "exit" or "." - for finish bot.\n')
 
     user_input = input(
         'Enter hello for start, or one of the commands for finish: ')
