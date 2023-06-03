@@ -1,5 +1,6 @@
 import csv
 from my_classes import AddressBook, Name, Phone, Record, NumberPhoneError, BirthdayError, EmailError, AdressError
+from datetime import datetime, timedelta
 
 
 # список для хранения имеющихся данных у контактов
@@ -189,19 +190,46 @@ def search(search):  # функция  для поиска  данных в ад
         return f'No data in contacts\nHow can I help you?'
     else:
         return f'{found_contacts}\nHow can I help you?'
+    
+def convert_dates(contacts_data):
+    new_contacts_data = []
+    for contact in contacts_data:
+        birthday = contact['birthday']
+        month, day, year = map(int, birthday.split('-'))
+        date_object = datetime(year, month, day)
+        new_contact = {'name': contact['name'], 'birthday': date_object}
+        new_contacts_data.append(new_contact)
+    return new_contacts_data
+
+def upcoming_birthdays(days):
+    days = int(days)
+    new_contacts_data = convert_dates(contacts_data)
+
+    today = datetime.now().date()
+    target_date = today + timedelta(days=days)
+
+    upcoming_birthdays_list = [
+        contact['name']
+        for contact in new_contacts_data
+        if (contact['birthday'].month, contact['birthday'].day) == (target_date.month, target_date.day)
+    ]
+    if len(upcoming_birthdays_list) == 0:
+        return 'There are no birthdays that day'
+    else:
+        return 'List of birthdays: ' + ', '.join(upcoming_birthdays_list)
 
 
 # словарь для хранения  имен функций обработчиков команд:
 command_func = {'hello': hello, 'add': add_phone, 'change': change,
                 'phone': phone, 'show all': show_all, 'exit': exit,
                 'save': save_contacts, 'search': search, 'birthday': add_birthday,
-                'email': add_email, 'adress': add_adress, 'read': read_contacts}
+                'email': add_email, 'adress': add_adress, 'read': read_contacts, 'birthdaylist':upcoming_birthdays}
 
 # главная функция:
 
 
 def main():
-    print('Hi, I am a contact book helper bot!\n\nI understand these commands:\n"add name phone" - add a new contact to the book, instead of name and phone, enter the username and phone number, separated by a space.\n"change name phone" - change contact phone number, instead of name and phone, enter the username and phone number, separated by a space.\n"phone name" - show contact phone number, instead of name enter the username.\n"birthday name data" - add/change data birthday contact, instead of name and data, enter the username and birthday in format month-day-year,separated by a space.\n"email name data" - add/change email contact, instead of name and data, enter the username and email,separated by a space\n"adress name data" - add/change adress contact, instead of name and data, enter the username and adress in format "name street" "number building" "name town",separated by a space.\n"show all" - show all contacts\n"save" - save data to file csv.\n"read" - read data from file csv.\n"search contact" - search for contacts,instead of a contact, enter a request (name / part of a name or phone number / part of a phone number).\n"hello" - for start bot.\n"good bye" or "close" or "exit" or "." - for finish bot.\n')
+    print('Hi, I am a contact book helper bot!\n\nI understand these commands:\n"add name phone" - add a new contact to the book, instead of name and phone, enter the username and phone number, separated by a space.\n"change name phone" - change contact phone number, instead of name and phone, enter the username and phone number, separated by a space.\n"phone name" - show contact phone number, instead of name enter the username.\n"birthday name data" - add/change data birthday contact, instead of name and data, enter the username and birthday in format month-day-year,separated by a space.\n "birthdaylist number" -  show a list of birthdays after a given number of days.\n"email name data" - add/change email contact, instead of name and data, enter the username and email,separated by a space\n"adress name data" - add/change adress contact, instead of name and data, enter the username and adress in format "name street" "number building" "name town",separated by a space.\n"show all" - show all contacts\n"save" - save data to file csv.\n"read" - read data from file csv.\n"search contact" - search for contacts,instead of a contact, enter a request (name / part of a name or phone number / part of a phone number).\n"hello" - for start bot.\n"good bye" or "close" or "exit" or "." - for finish bot.\n')
 
     user_input = input(
         'Enter hello for start, or one of the commands for finish: ')
