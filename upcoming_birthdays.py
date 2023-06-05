@@ -12,7 +12,7 @@ def convert_dates(contacts_data):
     new_contacts_data = []
     for contact in contacts_data:
         birthday = contact['birthday']
-        month, day, year = map(int, birthday.split('-'))
+        day, month, year = map(int, birthday.split('-'))
         date_object = datetime(year, month, day)
         new_contact = {'name': contact['name'], 'birthday': date_object}
         new_contacts_data.append(new_contact)
