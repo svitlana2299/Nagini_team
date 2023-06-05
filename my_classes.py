@@ -15,7 +15,7 @@ class EmailError(Exception):
     pass
 
 
-class AdressError(Exception):
+class AddressError(Exception):
     pass
 
 
@@ -61,126 +61,141 @@ class Phone(Field):
         return f'{self.value}'
 
 
-class Birthday:
+class Birthday(Field):
     def __init__(self, birthday=False):
-        self.__private_birthday = None
-        self.birthday = birthday
+        self.__private_value = None
+        self.value = birthday
 
     @property
     def birthday(self):
-        return self.__private_birthday
+        return self.__private_value
 
     @birthday.setter
     def birthday(self, new_birthday):
         try:
             if new_birthday == '':
-                self.__private_birthday = new_birthday
+                self.__private_value = new_birthday
             elif datetime.strptime(str(new_birthday), '%d-%m-%Y'):
-                self.__private_birthday = new_birthday
+                self.__private_value = new_birthday
         except ValueError:
             raise BirthdayError('Enter correct date')
 
     def __repr__(self):
-        return f'{self.birthday}'
+        return f'{self.value}'
 
     def __bool__(self):
-        return self.birthday != False
+        return self.value != False
 
 
-class Email:
+class Email(Field):
     def __init__(self, email=''):
-        self.__private_email = None
-        self.email = email
+        self.__private_value = None
+        self.value = email
 
     @property
     def email(self):
-        return self.__private_email
+        return self.__private_value
 
     @email.setter
     def email(self, new_email):
         try:
             if new_email == '':
-                self.__private_email = new_email
+                self.__private_value = new_email
             else:
                 mail = bool(
                     re.search(r"[a-zA-Z]+[\w\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}", new_email))
                 if mail:
-                    self.__private_email = new_email
+                    self.__private_value = new_email
                 else:
                     raise EmailError('Enter correct email')
         except ValueError:
             raise EmailError('Enter correct email')
 
     def __repr__(self):
-        return f'{self.email}'
+        return f'{self.value}'
 
 
-class Adress:
-    def __init__(self, adress=''):
-        self.__private_adress = None
-        self.adress = adress
+class Address(Field):
+    def __init__(self, address=''):
+        self.__private_value = None
+        self.value = address
 
     @property
-    def adress(self):
-        return self.__private_adress
+    def address(self):
+        return self.__private_value
 
-    @adress.setter
-    def adress(self, new_adress):
+    @address.setter
+    def address(self, new_address):
         try:
-            if new_adress == '':
-                self.__private_adress = new_adress
+            if new_address == '':
+                self.__private_value = new_address
             else:
                 adr = bool(
-                    re.search(r'^[A-Za-z0-9\s.,-]+ \d+[A-Za-z]* [A-Za-z\s]+$', new_adress))
+                    re.search(r'^[A-Za-z0-9\s.,-]+ \d+[A-Za-z]* [A-Za-z\s]+$', new_address))
                 if adr:
-                    self.__private_adress = new_adress
+                    self.__private_value = new_address
                 else:
-                    raise AdressError('Enter correct adress')
+                    raise AddressError('Enter correct adress')
         except ValueError:
-            raise AdressError('Enter correct adress')
+            raise AddressError('Enter correct address')
 
     def __repr__(self):
-        return f'{self.adress}'
+        return f'{self.value}'
 
+class AddressBook:
+    def __init__(self, **kwargs):
+        self.data = {}
 
-class Record:
-    def __init__(self, name, birthday='', email='', adress=''):
-        self.name = Name(name)
-        self.phones = []
-        self.birthday = birthday
-        self.email = email
-        self.adress = adress
+        for key, value in kwargs.items():
+            if key == 'name':
+                self.data['name'] = Name(value)
+            elif key == 'phones':
+                self.data['phones'] = []
+                for phone in value:
+                    self.data['phones'].append(phone)
+            elif key == 'birthday':
+                self.data['birthday'] = Birthday(value)
+            elif key == 'email':
+                self.data['email'] = Email(value)
+            elif key == 'address':
+                self.data['address'] = Address(value)
 
     def __repr__(self):
-        return f'{self.name}, {self.birthday}'
+        return f'{self.data["name"]}, {self.data["birthday"]}'
 
     def add_phone(self, phone: Phone):
         if phone != '':
-            self.phones.append(phone)
+            self.data['phones'].append(phone)
+        return self.data['phones']
 
     def delete_phone(self, phone: Phone):
-        for p in self.phones:
+        for p in self.data['phones']:
             if str(p) == phone:
-                self.phones.remove(p)
+                self.data['phones'].remove(p)
 
     def edit_phone(self, old_phone: Phone, new_phone: Phone):
-        for p in self.phones:
+        for p in self.data['phones']:
             if str(p) == old_phone:
-                self.phones[self.phones.index(p)] = new_phone
+                self.data['phones'][self.data['phones'].index(p)] = new_phone
+
+        return self.data['phones']
 
     def add_birthday(self, birthday):
-        self.birthday = Birthday(birthday)
+        self.data['birthday'] = Birthday(birthday)
+        return self.data['birthday']
 
     def add_email(self, email):
-        self.email = Email(email)
+        self.data['email'] = Email(email)
+        return self.data['email']
 
-    def add_adress(self, adress):
-        self.adress = Adress(adress)
+    def add_address(self, address):
+        self.data['address'] = Address(address)
+        return self.data['address']
 
     def days_to_birthday(self):
-        if self.birthday:
+        if self.data['birthday']:
             current_date = datetime.now()
-            data_birthday = datetime.strptime(str(self.birthday), '%d-%m-%Y')
+            data_birthday = datetime.strptime(str(self.data['birthday']), '%d-%m-%Y')
             current_data_birthday = data_birthday.replace(
                 year=current_date.year)
             if current_data_birthday < current_date:
@@ -192,32 +207,20 @@ class Record:
 
             return result.days
 
-
-class AddressBook(UserDict):
-    def add_record(self, record: Record):
-        self.data = {'name': record.name.value,
-                     'phone': record.phones, 'birthday': record.birthday,
-                     'email': record.email, 'adress': record.adress}
-
-    def iterator(self, n=1):
-        items = list(self.data.items())
-        for i in range(0, len(items), n):
-            yield items[i:i+n]
-
-    def search_contacts(self, search):
-        found_contacts = []
-        for val in self.data.values():
-            if type(val) is list:
-                if search in (','.join(val)):
-                    found_contacts.append(self.data)
-                    break
-            elif search in ('.,@!?+-;:='):
-                return f'Enter correct data'
-            else:
-                if search.lower() in str(val).lower():
-                    found_contacts.append(self.data)
-                    break
-        if len(found_contacts) == 0:
-            return f'No data in contacts\nHow can I help you?'
-        else:
-            return f'{found_contacts}\nHow can I help you?'
+    def edit(self, **kwargs):
+        for key, value in kwargs.items():
+            if key == 'name':
+                self.data[key] = Name(value)
+                return self.data[key]
+            elif key == 'phones':
+                self.data[key].append(Phone(value))
+                return self.data[key]
+            elif key == 'birthday':
+                self.data[key] = Birthday(value)
+                return self.data[key]
+            elif key == 'email':
+                self.data[key] = Email(value)
+                return self.data[key]
+            elif key == 'address':
+                self.data[key] = Address(value)
+                return self.data[key]
