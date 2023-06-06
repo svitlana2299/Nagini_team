@@ -1,5 +1,5 @@
 import csv
-
+from datetime import datetime, timedelta
 from my_classes import AddressBook, Name, Phone, Birthday, Email, Address, NumberPhoneError, BirthdayError, EmailError, AddressError
 
 # список для хранения имеющихся данных у контактов
@@ -211,7 +211,7 @@ def read_contacts(local_file_name, data):
     with open(local_file_name, 'r', newline='', encoding='utf-8') as file_obj:
         reader = csv.DictReader(file_obj)
         for row in list(reader):
-            row['phones'] = [str(x) for x in eval(row['phones'].replace('[', "['").replace(', ', "','").replace(']', "']"))]
+            row['phones'] = [str(x) for x in eval(row['phones'].replace('[', "['").replace(', ', "','").replace(']', "']"))] if row['phones'] else []
             entity = AddressBook(**row)
             new_data = entity.get_contact()
             unique_identifier = new_data['name'].value
@@ -300,17 +300,44 @@ def search(value_search):
 
         return f'How can I help you?\n'
 
+# Конвертация дат в datetime объекты
+def convert_dates(contacts_data):
+    new_contacts_data = []
+    for contact in contacts_data:
+        birthday = str(contact['birthday'])
+        day,month, year = map(int, birthday.split('-'))
+        date_object = datetime(year, month, day)
+        new_contact = {'name': contact['name'], 'birthday': date_object}
+        new_contacts_data.append(new_contact)
+    return new_contacts_data
+
+# Функция вывода списка дней рождений через заданное число дней
+def upcoming_birthdays(days):
+    # days = int(days)
+    new_contacts_data = convert_dates(contacts_data)
+
+    today = datetime.now().date()
+    target_date = today + timedelta(days=int(days))
+    upcoming_birthdays_list = [
+        str(contact['name'])
+        for contact in new_contacts_data
+        if (contact['birthday'].month, contact['birthday'].day) == (target_date.month, target_date.day)
+    ]
+    if len(upcoming_birthdays_list) == 0:
+        return 'There are no birthdays that day'
+    else:
+        return 'List of birthdays: ' + ', '.join(upcoming_birthdays_list)
+
 
 # словарь для хранения  имен функций обработчиков команд:
 command_func = {'hello': hello, 'add': add_data, 'show-phone': show_phone,
                 'show all': show_contacts, 'exit': exit_program,
                 'save': save_contacts, 'search': search, 'birthday': add_birthday,
                 'email': add_email, 'address': add_address, 'read': read_contacts,
-                'edit': edit_data, 'remove-contact': remove_contact}
+                'edit': edit_data, 'remove-contact': remove_contact, 'birthday-list': upcoming_birthdays}
 
 
 # главная функция:
-
 
 def main():
     user_input = input(
@@ -331,8 +358,8 @@ def main():
             'for contacts,instead of a contact, enter a request (name / part of a name or phone number / part of a '
             'phone number).\n"hello" - for start bot.\n"good bye" or "close" or "exit" or "." - for finish '
             'bot.\n"edit" - change contact, instead of name, enter the name, phone, birthday, email and address '
-            'separated by a space\n"remove-contact" - delete contact, enter the name for delete\n')
-
+            'separated by a space\n"remove-contact" - delete contact, enter the name for delete '
+            '\n"birthday-list number" -  show a list of birthdays after a given number of days.\n')
         while True:
             try:
                 if user_input.lower().strip() in finish:
