@@ -67,18 +67,18 @@ class Birthday(Field):
         self.value = birthday
 
     @property
-    def birthday(self):
+    def value(self):
         return self.__private_value
 
-    @birthday.setter
-    def birthday(self, new_birthday):
+    @value.setter
+    def value(self, new_birthday):
         try:
             if new_birthday == '':
                 self.__private_value = new_birthday
-            elif datetime.strptime(str(new_birthday), '%d-%m-%Y'):
+            elif datetime.strptime(new_birthday, '%d-%m-%Y'):
                 self.__private_value = new_birthday
-        except ValueError:
-            raise BirthdayError('Enter correct date')
+        except Exception:
+            raise BirthdayError
 
     def __repr__(self):
         return f'{self.value}'
@@ -152,7 +152,7 @@ class AddressBook:
             elif key == 'phones':
                 self.data['phones'] = []
                 for phone in value:
-                    self.data['phones'].append(phone)
+                    self.data['phones'].append(Phone(str(phone)))
             elif key == 'birthday':
                 self.data['birthday'] = Birthday(value)
             elif key == 'email':
@@ -163,9 +163,9 @@ class AddressBook:
     def __repr__(self):
         return f'{self.data["name"]}, {self.data["birthday"]}'
 
-    def add_phone(self, phone: Phone):
+    def add_phone(self, phone):
         if phone != '':
-            self.data['phones'].append(phone)
+            self.data['phones'].append(Phone(str(phone)))
         return self.data['phones']
 
     def delete_phone(self, phone: Phone):
@@ -173,10 +173,10 @@ class AddressBook:
             if str(p) == phone:
                 self.data['phones'].remove(p)
 
-    def edit_phone(self, old_phone: Phone, new_phone: Phone):
+    def edit_phone(self, **kwargs):
         for p in self.data['phones']:
-            if str(p) == old_phone:
-                self.data['phones'][self.data['phones'].index(p)] = new_phone
+            if str(p) == kwargs['old_phone']:
+                self.data['phones'][self.data['phones'].index(p)] = Phone(kwargs['new_phone'])
 
         return self.data['phones']
 
@@ -213,7 +213,13 @@ class AddressBook:
                 self.data[key] = Name(value)
                 return self.data[key]
             elif key == 'phones':
-                self.data[key].append(Phone(value))
+                if key in self.data.keys():
+                    for phone in value:
+                        self.data[key].append(Phone(str(phone)))
+                else:
+                    self.data[key] = []
+                    for phone in value:
+                        self.data[key].append(Phone(str(phone)))
                 return self.data[key]
             elif key == 'birthday':
                 self.data[key] = Birthday(value)
@@ -224,3 +230,6 @@ class AddressBook:
             elif key == 'address':
                 self.data[key] = Address(value)
                 return self.data[key]
+
+    def get_contact(self):
+        return self.data

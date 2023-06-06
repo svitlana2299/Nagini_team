@@ -1,4 +1,5 @@
 import csv
+
 from my_classes import AddressBook, Name, Phone, Birthday, Email, Address, NumberPhoneError, BirthdayError, EmailError, AddressError
 
 # список для хранения имеющихся данных у контактов
@@ -33,7 +34,7 @@ def input_error(func):
         except FileNotFoundError:
             return f'Please first enter and save the data'
         except BirthdayError:
-            return f'This date is not format, please repeat the command and enter correct date, or enter next command'
+            return f'Invalid birthday date. Please, put the date in format dd-mm-yyyy'
         except EmailError:
             return f'This email is not correct, please repeat the command and enter correct email, or enter next command'
         except AddressError:
@@ -95,30 +96,16 @@ def add_data():
 
     raise KeyError
 
-
-@input_error
-def change_phone(name, phone):  # функция для смены номера телефона
-    name = Name(name.title())
-    phone = Phone(phone)
-    for cont in contacts_data:
-        if name.value == cont['name']:
-            entity = AddressBook(**cont)
-            cont['phones'] = entity.edit_phone(cont['phones'], phone)
-            return f'Contact updated successfully\nHow can I help you?'
-    raise KeyError
-
-
 @input_error
 def add_name_phone(name, phone):  # функция добавления/сохранения номера телефона  контакта
     name = Name(name.title())
-    new_phone = Phone(phone)
     for cont in contacts_data:
         if cont['name'] == name.value:
             entity = AddressBook(**cont)
-            cont['phones'].append(entity.add_phone(new_phone))
+            cont['phones'].append(entity.add_phone(phone))
             return f'Contact added successfully\n\nHow can I help you?'
 
-    contacts_data.append({'name': name.value, 'phones': [new_phone]})
+    contacts_data.append({'name': name, 'phones': [Phone(str(phone))]})
     return f'Contact added successfully\n\nHow can I help you?'
 
 
@@ -172,7 +159,15 @@ def add_address(name, address):
 
 @input_error
 def show_contacts():  # функция для показа всех контактов
-    return f'{contacts_data}\nHow can I help you?'
+    if len(contacts_data) > 0:
+        print('-----------------------------------------------------------')
+        for cont in contacts_data:
+            for key, value in cont.items():
+                print(f'{key}: {value}')
+            print('-----------------------------------------------------------')
+    else:
+        print('There are no records')
+    return f'How can I help you?\n'
 
 
 @input_error
@@ -192,13 +187,24 @@ def save_contacts(local_file_name, local_contacts_data):
 @input_error
 # функция  для чтения  данных из  файла csv
 def read_contacts(local_file_name, data):
-    with open(local_file_name, 'r', newline='', encoding='utf-8') as fh:
-        reader = csv.DictReader(fh)
-        for row in reader:
-            data.append(row)
-    print(contacts_data)
-    return f'How can I help you?'
+    with open(local_file_name, 'r', newline='', encoding='utf-8') as file_obj:
+        reader = csv.DictReader(file_obj)
+        for row in list(reader):
+            row['phones'] = [str(x) for x in eval(row['phones'].replace('[', "['").replace(', ', "','").replace(']', "']"))]
+            print(row['birthday'])
+            entity = AddressBook(**row)
+            new_data = entity.get_contact()
+            unique_identifier = new_data['name'].value
 
+            if not any(contact['name'].value == unique_identifier for contact in data):
+                data.append(new_data)
+
+    print('-----------------------------------------------------------')
+    for cont in data:
+        for key, value in cont.items():
+            print(f'{key}: {value}')
+        print('-----------------------------------------------------------')
+    return f'How can I help you?'
 
 @input_error
 # функция  для редактирования контакта
@@ -206,13 +212,37 @@ def edit_data(name):
     name = Name(name.title())
 
     for cont in contacts_data:
-        if cont['name'] == name.value:
+        if cont['name'].value == name.value:
             entity = AddressBook(**cont)
 
             for field_name in field_names:
-                user_input_new_value = input(f'{field_name}: ')
-                if user_input_new_value:
-                    cont[field_name] = entity.edit(**{field_name: user_input_new_value})
+                if 'phones' == field_name:
+                    if 'phones' in cont.keys() and len(cont['phones']):
+                        print('At the moment you have several phones.\n')
+                        for phone in cont['phones']:
+                            print(f'{phone}\n')
+                        print('Choose which one you want to change.\n')
+                        print('To change, specify the data in the format "[OldAddress] [NewAddress]".\n')
+                        print('if you add a new phone the data in the format "[NewAddress]".\n')
+                        print('If you do not want to change the phone then just press ENTER".\n')
+
+                        user_input_new_value = input(f'{field_name}: ')
+
+                        if user_input_new_value:
+                            data_phone = user_input_new_value.strip().lower().split(' ', 1)
+
+                            if len(data_phone) == 2:
+                                cont[field_name] = entity.edit_phone(**{'old_phone': data_phone[0], 'new_phone': data_phone[1]})
+                            else:
+                                cont[field_name] = entity.add_phone(data_phone[0])
+                    else:
+                        user_input_new_value = input(f'{field_name}: ')
+                        if user_input_new_value:
+                            cont[field_name] = entity.edit(**{field_name: [user_input_new_value]})
+                else:
+                    user_input_new_value = input(f'{field_name}: ')
+                    if user_input_new_value:
+                        cont[field_name] = entity.edit(**{field_name: user_input_new_value})
 
             return f'Contact {cont["name"]} edited successfully\nHow can I help you?'
     raise KeyError
@@ -224,7 +254,7 @@ def remove_contact(name):
     name = Name(name.title())
 
     for cont in contacts_data:
-        if cont['name'] == name.value:
+        if cont['name'].value == name.value:
             contacts_data.remove(cont)
 
             return f'Remove contact successfully\nHow can I help you?'
@@ -233,20 +263,26 @@ def remove_contact(name):
 
 # функция  для поиска  данных в адресной книге
 def search(value_search):
-    found_contacts = list(filter(lambda item: value_search in item['name'].lower().strip(), contacts_data))
+    found_contacts = list(filter(lambda item: value_search.lower().strip() in item['name'].value.lower().strip(), contacts_data))
 
     if len(found_contacts) == 0:
         return f'No data in contacts\nHow can I help you?'
     else:
-        return f'{found_contacts}\nHow can I help you?'
+        print('-----------------------------------------------------------')
+        for cont in found_contacts:
+            for key, value in cont.items():
+                print(f'{key}: {value}')
+            print('-----------------------------------------------------------')
+
+        return f'How can I help you?\n'
 
 
 # словарь для хранения  имен функций обработчиков команд:
-command_func = {'hello': hello, 'add': add_data, 'change-phone': change_phone,
-                'show-phone': show_phone, 'show all': show_contacts, 'exit': exit_program,
+command_func = {'hello': hello, 'add': add_data, 'show-phone': show_phone,
+                'show all': show_contacts, 'exit': exit_program,
                 'save': save_contacts, 'search': search, 'birthday': add_birthday,
-                'email': add_email, 'address': add_address, 'read': read_contacts, 'edit': edit_data,
-                'remove-contact': remove_contact}
+                'email': add_email, 'address': add_address, 'read': read_contacts,
+                'edit': edit_data, 'remove-contact': remove_contact}
 
 
 # главная функция:
