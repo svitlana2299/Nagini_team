@@ -62,10 +62,6 @@ class Phone(Field):
 
 
 class Birthday(Field):
-    def __init__(self, birthday=False):
-        self.__private_value = None
-        self.value = birthday
-
     @property
     def value(self):
         return self.__private_value
@@ -83,21 +79,17 @@ class Birthday(Field):
     def __repr__(self):
         return f'{self.value}'
 
-    def __bool__(self):
-        return self.value != False
-
-
 class Email(Field):
     def __init__(self, email=''):
         self.__private_value = None
         self.value = email
 
     @property
-    def email(self):
+    def value(self):
         return self.__private_value
 
-    @email.setter
-    def email(self, new_email):
+    @value.setter
+    def value(self, new_email):
         try:
             if new_email == '':
                 self.__private_value = new_email
@@ -108,7 +100,7 @@ class Email(Field):
                     self.__private_value = new_email
                 else:
                     raise EmailError('Enter correct email')
-        except ValueError:
+        except Exception:
             raise EmailError('Enter correct email')
 
     def __repr__(self):
