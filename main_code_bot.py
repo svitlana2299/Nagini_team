@@ -23,7 +23,8 @@ def input_error(func):
             result = func(*args)
             return result
         except KeyError:
-            return f'Name can not be empty, please repeat the command and enter correct user name, or enter next command'
+            return f'There is no such name in contacts. Please, add the contact with this name first or enter correct ' \
+                   f'name'
         except ValueError:
             return f'You have entered an invalid command, please refine your query'
         except IndexError:
@@ -101,7 +102,12 @@ def add_name_phone(name, phone):  # функция добавления/сохр
     name = Name(name.title())
     for cont in contacts_data:
         if cont['name'] == name.value:
-            entity = AddressBook(**cont)
+            item = {}
+            for key, data in cont.items():
+                print(key, type(data) == list, data)
+                item[key] = map(lambda x: str(x.value), data) if type(data) == list else data.value
+
+            entity = AddressBook(**item)
             cont['phones'].append(entity.add_phone(phone))
             return f'Contact added successfully\n\nHow can I help you?'
 
@@ -124,7 +130,12 @@ def add_birthday(name, birthday):
     name = Name(name.title())
     for cont in contacts_data:
         if cont['name'] == name.value:
-            entity = AddressBook(**cont)
+            item = {}
+            for key, data in cont.items():
+                print(key, type(data) == list, data)
+                item[key] = map(lambda x: str(x.value), data) if type(data) == list else data.value
+
+            entity = AddressBook(**item)
             cont['birthday'] = entity.add_birthday(birthday)
             return f'Contact birthday added successfully\nHow can I help you?'
 
@@ -136,7 +147,12 @@ def add_email(name, email):  # функция для добавления email 
     name = Name(name.title())
     for cont in contacts_data:
         if cont['name'] == name.value:
-            entity = AddressBook(**cont)
+            item = {}
+            for key, data in cont.items():
+                print(key, type(data) == list, data)
+                item[key] = map(lambda x: str(x.value), data) if type(data) == list else data.value
+
+            entity = AddressBook(**item)
             cont['email'] = entity.add_email(email)
             return f'Contact email added successfully\nHow can I help you?'
 
@@ -150,7 +166,12 @@ def add_address(name, address):
 
     for cont in contacts_data:
         if cont['name'] == name.value:
-            entity = AddressBook(**cont)
+            item = {}
+            for key, data in cont.items():
+                print(key, type(data) == list, data)
+                item[key] = map(lambda x: str(x.value), data) if type(data) == list else data.value
+
+            entity = AddressBook(**item)
             cont['address'] = entity.add_address(address.title())
             return f'Contact address added successfully\nHow can I help you?'
 
@@ -191,7 +212,6 @@ def read_contacts(local_file_name, data):
         reader = csv.DictReader(file_obj)
         for row in list(reader):
             row['phones'] = [str(x) for x in eval(row['phones'].replace('[', "['").replace(', ', "','").replace(']', "']"))]
-            print(row['birthday'])
             entity = AddressBook(**row)
             new_data = entity.get_contact()
             unique_identifier = new_data['name'].value
@@ -213,7 +233,11 @@ def edit_data(name):
 
     for cont in contacts_data:
         if cont['name'].value == name.value:
-            entity = AddressBook(**cont)
+            item = {}
+            for key, data in cont.items():
+                item[key] = map(lambda x: str(x.value), data) if type(data) == list else data.value
+
+            entity = AddressBook(**item)
 
             for field_name in field_names:
                 if 'phones' == field_name:
@@ -222,8 +246,8 @@ def edit_data(name):
                         for phone in cont['phones']:
                             print(f'{phone}\n')
                         print('Choose which one you want to change.\n')
-                        print('To change, specify the data in the format "[OldAddress] [NewAddress]".\n')
-                        print('if you add a new phone the data in the format "[NewAddress]".\n')
+                        print('To change, specify the data in the format "[OldPhone] [NewPhone]".\n')
+                        print('if you add a new phone the data in the format "[NewPhone]".\n')
                         print('If you do not want to change the phone then just press ENTER".\n')
 
                         user_input_new_value = input(f'{field_name}: ')
