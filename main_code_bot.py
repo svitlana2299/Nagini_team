@@ -5,7 +5,7 @@ from my_classes import AddressBook, Name, Phone, Birthday, Email, Address, Numbe
 contacts_data = []
 
 # список  имен комманд для окончания работы бота:
-finish = ['good bye', 'close', 'exit', '.']
+finish = ['good bye', 'close', 'exit', '.', 'help']
 
 # файл csv для сохранение данных адресной книги на диск
 file_name = 'contacts_data.csv'
@@ -176,8 +176,8 @@ def show_contacts():  # функция для показа всех контак
 
 
 @input_error
-def exit_program():  # функция  для окончания работы бота
-    return f'Good bye!'
+def exit_program():# функция  для окончания работы бота
+    return f'Have a good mood!'
 
 
 # функция  для сохранения данных в файл csv
@@ -252,26 +252,26 @@ command_func = {'hello': hello, 'add': add_data, 'change-phone': change_phone,
 # главная функция:
 
 
-def main():
-    user_input = input(
-        'Enter hello for start, or one of the commands for finish: ')
+def main(user_input):
+    # user_input = input(
+    #     'Enter hello for start, or one of the commands for finish: ')
 
-    if user_input.lower().strip() == 'hello':
-        print(
-            'Hi, I am a contact book helper bot!\n\nI understand these commands:\n"add name phone" - add a new contact '
-            'to the book, instead of name and phone, enter the username and phone number, separated by a '
-            'space.\n"change name phone" - change contact phone number, instead of name and phone, enter the username '
-            'and phone number, separated by a space.\n"phone name" - show contact phone number, instead of name enter '
-            'the username.\n"birthday name data" - add/change data birthday contact, instead of name and data, '
-            'enter the username and birthday in format month-day-year,separated by a space.\n"email name data" - '
-            'add/change email contact, instead of name and data, enter the username and email,separated by a '
-            'space\n"address name data" - add/change address contact, instead of name and data, enter the username and '
-            'address in format "name street" "number building" "name town",separated by a space.\n"show all" - show all'
-            'contacts\n"save" - save data to file csv.\n"read" - read data from file csv.\n"search contact" - search '
-            'for contacts,instead of a contact, enter a request (name / part of a name or phone number / part of a '
-            'phone number).\n"hello" - for start bot.\n"good bye" or "close" or "exit" or "." - for finish '
-            'bot.\n"edit" - change contact, instead of name, enter the name, phone, birthday, email and address '
-            'separated by a space\n"remove-contact" - delete contact, enter the name for delete\n')
+    # if user_input.lower().strip() == 'hello':
+    #     print(
+    #         'Hi, I am a contact book helper bot!\n\nI understand these commands:\n"add name phone" - add a new contact '
+    #         'to the book, instead of name and phone, enter the username and phone number, separated by a '
+    #         'space.\n"change name phone" - change contact phone number, instead of name and phone, enter the username '
+    #         'and phone number, separated by a space.\n"phone name" - show contact phone number, instead of name enter '
+    #         'the username.\n"birthday name data" - add/change data birthday contact, instead of name and data, '
+    #         'enter the username and birthday in format month-day-year,separated by a space.\n"email name data" - '
+    #         'add/change email contact, instead of name and data, enter the username and email,separated by a '
+    #         'space\n"address name data" - add/change address contact, instead of name and data, enter the username and '
+    #         'address in format "name street" "number building" "name town",separated by a space.\n"show all" - show all'
+    #         'contacts\n"save" - save data to file csv.\n"read" - read data from file csv.\n"search contact" - search '
+    #         'for contacts,instead of a contact, enter a request (name / part of a name or phone number / part of a '
+    #         'phone number).\n"hello" - for start bot.\n"good bye" or "close" or "exit" or "." - for finish '
+    #         'bot.\n"edit" - change contact, instead of name, enter the name, phone, birthday, email and address '
+    #         'separated by a space\n"remove-contact" - delete contact, enter the name for delete\n')
 
         while True:
             try:
@@ -296,13 +296,15 @@ def main():
             except (ValueError, TypeError):
                 user_input = input(
                     f'You have entered an invalid command, please refine your query\nHow can I help you?\n')
-    elif user_input.lower().strip() in finish:
-        user_input_parser = parcer('exit')
-        command, arg = user_input_parser
-        print(command(*arg))
-    else:
-        main()
+    # elif user_input.lower().strip() in finish:
+    #     user_input_parser = parcer('exit')
+    #     command, arg = user_input_parser
+    #     print(command(*arg))
+    # else:
+    #     main()
 
+# def run():
+#     main(user_input)
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     run()
