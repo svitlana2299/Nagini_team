@@ -66,8 +66,8 @@ class NoteManager:
                     key: [Note(note['note'], note['tags']) for note in value]
                     for key, value in data.items()
                 }
-
 # Добавлення нотаток
+
     def add_notes(self, note, tags):
         if not tags or all(tag == '' for tag in tags):
             tags = ['Ключове слово']
@@ -105,9 +105,14 @@ class NoteManager:
 
 # Заміна нотатки по індексу
     def edit_note_by_index(self, index, new_note):
+        if not str(index).isdigit():
+            print("Invalid input. Index must be a digit.")
+            return
+
+        index = int(index)
         found = False
         for notes in self.notes.values():
-            if index >= 0 and index < len(notes):
+            if 0 <= index < len(notes):
                 notes[index].note = new_note
                 found = True
                 break
@@ -178,7 +183,7 @@ class NoteManager:
         else:
             print("No notes found for sorting")
 
-# Функція для запуску коду
+# Функція для запуску
 
 
 def run_command(command):
@@ -192,17 +197,20 @@ def run_command(command):
     elif command == 'edit-index':
         try:
             index = int(input("Enter the note index: "))
-            note_manager.delete_note_by_index(index)
+            new_note = input("Enter the new note: ")
+            note_manager.edit_note_by_index(index, new_note)
         except ValueError:
             print("Invalid input. Index must be a digit.")
-        note_manager.edit_note_by_index(index, new_note)
     elif command == 'edit-keyword':
         keyword = input("Enter the keyword: ")
         new_note = input("Enter the new note: ")
         note_manager.edit_note_by_keyword(keyword, new_note)
     elif command == 'delete-index':
-        index = int(input("Enter the note index: "))
-        note_manager.delete_note_by_index(index)
+        try:
+            index = int(input("Enter the note index: "))
+            note_manager.delete_note_by_index(index)
+        except ValueError:
+            print("Invalid input. Index must be a digit.")
     elif command == 'delete-keyword':
         keyword = input("Enter the keyword: ")
         note_manager.delete_note_by_keyword(keyword)
@@ -215,6 +223,7 @@ def run_command(command):
 
 
 note_manager = NoteManager()
+
 
 command_list = ['add', 'search', 'search-all', 'edit-index', 'edit-keyword',
                 'delete-index', 'delete-keyword', 'sort', 'exit']
