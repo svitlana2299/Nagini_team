@@ -36,7 +36,7 @@ class Note:
 class NoteManager:
     def __init__(self):
         self.notes = {}
-        # self.load_notes()
+        self.load_notes()
 
     def __str__(self) -> str:
         return f"{self.notes}"
@@ -83,6 +83,15 @@ class NoteManager:
         if result_search:
             for note in result_search:
                 print(note.note)
+        else:
+            print("No notes found")
+
+    def search_all(self):
+        if self.notes:
+            print("All notes:")
+            for tag, notes in self.notes.items():
+                for note in notes:
+                    print(f"Note: {note.note} (Tags: {', '.join(note.tags)})")
         else:
             print("No notes found")
 
@@ -181,17 +190,20 @@ def run_command(command):
         note_manager.delete_note_by_keyword(keyword)
     elif command == 'sort':
         note_manager.sort_notes_alphabetically()
+    elif command == 'search-all':
+        note_manager.search_all()
     else:
         print("Invalid command")
 
 
 note_manager = NoteManager()
 
-command_list = ['add', 'search', 'edit-index', 'edit-keyword', 'delete-index', 'delete-keyword', 'sort', 'exit']
+command_list = ['add', 'search', 'search-all', 'edit-index', 'edit-keyword',
+                'delete-index', 'delete-keyword', 'sort', 'exit']
 
 # while True:
 #     user_input = input(
-#         "Enter a command (add, search, edit-index, edit-keyword, delete-index, delete-keyword, sort) or 'exit' to quit: ")
+#         "Enter a command (add, search, search-all, edit-index, edit-keyword, delete-index, delete-keyword, sort) or 'exit' to quit: ")
 #     if user_input == 'exit':
 #         break
 #     run_command(user_input)

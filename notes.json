@@ -6,5 +6,21 @@
         "hello"
       ]
     }
+  ],
+  "Hi": [
+    {
+      "note": "Hello",
+      "tags": [
+        "Hi"
+      ]
+    }
+  ],
+  "Ключове слово": [
+    {
+      "note": "meeting today at 10 p.m",
+      "tags": [
+        "Ключове слово"
+      ]
+    }
   ]
 }
