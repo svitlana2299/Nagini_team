@@ -15,6 +15,8 @@ class Note:
             return self.note == other.note and self.tags == other.tags
         return False
 
+# Метод __getitem__ дозволяє отримувати значення властивостей tags
+# і note об'єкту Note за допомогою синтаксису з квадратними дужками
     def __getitem__(self, key):
         if key == 'tags':
             return self.tags
@@ -23,6 +25,7 @@ class Note:
         else:
             raise KeyError(f"Invalid key: {key}")
 
+# забезпечує коректну серіалізацію об'єкту Note до формату JSON.
     @staticmethod
     def default(obj):
         if isinstance(obj, Note):
@@ -44,6 +47,7 @@ class NoteManager:
     def __repr__(self) -> str:
         return f"{self.notes}"
 
+# Збереження нотатків в notes.json
     def save_notes(self):
         with open('notes.json', 'w', encoding='utf-8') as file:
             data = {
@@ -53,6 +57,7 @@ class NoteManager:
             json.dump(data, file, default=Note.default,
                       ensure_ascii=False, indent=2, separators=(',', ': '))
 
+# Зчитування нотаток
     def load_notes(self):
         if os.path.exists('notes.json'):
             with open('notes.json', 'r', encoding='utf-8') as file:
@@ -62,6 +67,7 @@ class NoteManager:
                     for key, value in data.items()
                 }
 
+# Добавлення нотаток
     def add_notes(self, note, tags):
         if not tags or all(tag == '' for tag in tags):
             tags = ['Ключове слово']
@@ -74,6 +80,7 @@ class NoteManager:
         print(f"Note added: {new_note}")
         self.save_notes()
 
+# Пошук нотаток по ключовому слову
     def search_notes(self, word):
         result_search = []
         for notes in self.notes.values():
@@ -86,6 +93,7 @@ class NoteManager:
         else:
             print("No notes found")
 
+# Пошук усіх нотаток
     def search_all(self):
         if self.notes:
             print("All notes:")
@@ -95,6 +103,7 @@ class NoteManager:
         else:
             print("No notes found")
 
+# Заміна нотатки по індексу
     def edit_note_by_index(self, index, new_note):
         found = False
         for notes in self.notes.values():
@@ -109,6 +118,7 @@ class NoteManager:
             print("Invalid note index")
         self.save_notes()
 
+# Заміна нотатки по ключовому слову
     def edit_note_by_keyword(self, keyword, new_note):
         found = False
         for notes in self.notes.values():
@@ -124,6 +134,7 @@ class NoteManager:
             print(f"No note found with keyword '{keyword}'")
         self.save_notes()
 
+# Видалення нотатки по індексу
     def delete_note_by_index(self, index):
         found = False
         for notes in self.notes.values():
@@ -138,6 +149,7 @@ class NoteManager:
             print("Invalid note index")
         self.save_notes()
 
+# Видалення нотатки по ключовому слову
     def delete_note_by_keyword(self, keyword):
         found = False
         for tag, notes in self.notes.items():
@@ -153,6 +165,7 @@ class NoteManager:
             print(f"No notes found with keyword '{keyword}'")
         self.save_notes()
 
+# Слортування нотаток по алфавіту
     def sort_notes_alphabetically(self):
         sorted_notes = []
         for tag, notes in self.notes.items():
@@ -165,6 +178,8 @@ class NoteManager:
         else:
             print("No notes found for sorting")
 
+# Функція для запуску коду
+
 
 def run_command(command):
     if command == 'add':
@@ -175,8 +190,11 @@ def run_command(command):
         word = input("Enter the search word: ")
         note_manager.search_notes(word)
     elif command == 'edit-index':
-        index = int(input("Enter the note index: "))
-        new_note = input("Enter the new note: ")
+        try:
+            index = int(input("Enter the note index: "))
+            note_manager.delete_note_by_index(index)
+        except ValueError:
+            print("Invalid input. Index must be a digit.")
         note_manager.edit_note_by_index(index, new_note)
     elif command == 'edit-keyword':
         keyword = input("Enter the keyword: ")
