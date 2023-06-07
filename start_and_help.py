@@ -7,7 +7,7 @@ from note import run_command, command_list
 sort_folder = Sorter()
 
 # список команд главного меню бота
-func_list = ['contact book', 'notebook', 'sort', 'help', 'exit']
+func_list = ['contact book', 'note', 'sort', 'help', 'exit']
 
 # пример для ввода пути папки на разных OS
 windows = r"Windows: C:\Users\Username\Documents\My_Folder"
@@ -32,7 +32,7 @@ def contact_book_help():
 
 # функция меню заметок
 def notebook():
-    print(f"\nI am a notebook helper bot!\nI can:\n- Save notes with text information and keywords (tags) (to access this function, please enter 'Add')\n- Search for notes (to use this function, please enter 'Search')\n-Search for notes and show all notes (to use this function, please enter 'Search-all')\n- Edit notes by index (to use this function, please enter 'Edit-index')\n- Edit notes by keywords (tags)  (to use this keyword, please enter 'Edit-keyword')\n- Delete notes by index (to use this function, please enter 'Delete-index')\n- Delete notes by keywords (tags)  (to use this function, please enter 'Delete-keyword')\n- Sort notes (to use this function, please enter 'Sort')\nFor more detailed information, enter 'Help'")
+    print(f"\nI am a notebook helper bot!\nI can:\n- Save notes with text information and keywords (tags) (to access this function, please enter 'Add')\n- Search for notes (to use this function, please enter 'Search')\n- Search for notes and show all notes (to use this function, please enter 'Search-all')\n- Edit notes by index (to use this function, please enter 'Edit-index')\n- Edit notes by keywords (tags)  (to use this keyword, please enter 'Edit-keyword')\n- Delete notes by index (to use this function, please enter 'Delete-index')\n- Delete notes by keywords (tags)  (to use this function, please enter 'Delete-keyword')\n- Sort notes (to use this function, please enter 'Sort')\nFor more detailed information, enter 'Help'")
 
 
 # функция хелпер заметок
