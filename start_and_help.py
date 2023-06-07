@@ -9,7 +9,7 @@ sort_folder = Sorter()
 # список команд главного меню бота
 func_list = ['contact book', 'note', 'sort', 'help', 'exit']
 
-# пример для ввода пути папки на разных OS
+# переменные пример для ввода пути папки на разных OS
 windows = r"Windows: C:\Users\Username\Documents\My_Folder"
 macOS = r"macOS: /Users/Username/Documents/My_folder"
 Linux = r"Linux: /home/Username/Documents/My_folder"
@@ -127,7 +127,4 @@ def start_bot():
     else:
         start_bot()
 
-
-# точка входа
-if __name__ == "__main__":
-    start_bot()
+start_bot()
