@@ -1,0 +1,10 @@
+{
+  "hello": [
+    {
+      "note": "hello world",
+      "tags": [
+        "hello"
+      ]
+    }
+  ]
+}

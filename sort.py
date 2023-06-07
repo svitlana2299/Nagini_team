@@ -135,9 +135,9 @@ class Sorter:
         )
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    sort1 = Sorter()
+#     sort1 = Sorter()
 
     # k = sort1.REGISTER_EXTENSION['JPG'][1]
     # print(k)
@@ -148,5 +148,4 @@ if __name__ == '__main__':
     # print(c)
     # d = sort1.get_extention('file.dosx')
     # print(d)
-    sort1.sort('/Users/andrewchychur/Desktop/new_folder')
-    sort1.sort('/Users/andrewchychur/Desktop/new_folder_1')
+    #sort1.sort('/Users/andrewchychur/Desktop/new_folder_1')
