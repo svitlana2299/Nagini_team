@@ -135,18 +135,4 @@ class Sorter:
         )
 
 
-if __name__ == '__main__':
 
-    sort1 = Sorter()
-
-    # k = sort1.REGISTER_EXTENSION['JPG'][1]
-    # print(k)
-
-    # b = sort1.trans()
-    # print(b)
-    # c = sort1.normalize(k.name.replace(k.suffix, '')) + k.suffix
-    # print(c)
-    # d = sort1.get_extention('file.dosx')
-    # print(d)
-    sort1.sort('/Users/andrewchychur/Desktop/new_folder')
-    sort1.sort('/Users/andrewchychur/Desktop/new_folder_1')
