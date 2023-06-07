@@ -224,6 +224,6 @@ def run_command(command):
 
 note_manager = NoteManager()
 
-
+# список команд бота
 command_list = ['add', 'search', 'search-all', 'edit-index', 'edit-keyword',
                 'delete-index', 'delete-keyword', 'sort', 'exit']
