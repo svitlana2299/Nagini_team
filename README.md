@@ -6,12 +6,14 @@ Installation from the specified file:
 
 Open a command prompt or terminal.
 Navigate to the folder where the .whl or .tar.gz package file is located.
-Run the pip install package_file command, where package_file is the name of the package file. For example, pip install mypackage-1.0.0.tar.gz.
+Run the pip install package_file command, where package_file is the name of the package file.
+
 Installing from a local directory:
 
 Open a command prompt or terminal.
 Navigate to the root folder of the project that contains setup.py.
 Run pip install ., which will install the package using setup.py in the current directory.
+
 Installing from the specified Git repository:
 
 Open a command prompt or terminal.
