@@ -15,8 +15,6 @@ field_names = ['name', 'phones', 'birthday', 'email', 'address']
 
 
 # функция декоратор для функций обработчиков команд:
-
-
 def input_error(func):
     def inner(*args):
         try:
@@ -58,12 +56,6 @@ def parcer(user_input):
         return f'You have entered an invalid command, please refine your query'
 
 
-# функции обработчки  вводимых команд:
-# @input_error
-# def hello():  # функция приветствия
-#     return f'How can I help you?Enter please command: '
-
-
 # функция добавления контакта и его данных
 @input_error
 def add_data():
@@ -97,86 +89,6 @@ def add_data():
 
     raise KeyError
 
-# @input_error
-# def add_name_phone(name, phone):  # функция добавления/сохранения номера телефона  контакта
-#     name = Name(name.title())
-#     for cont in contacts_data:
-#         if cont['name'] == name.value:
-#             item = {}
-#             for key, data in cont.items():
-#                 print(key, type(data) == list, data)
-#                 item[key] = map(lambda x: str(x.value), data) if type(data) == list else data.value
-
-#             entity = AddressBook(**item)
-#             cont['phones'].append(entity.add_phone(phone))
-#             return f'Contact added successfully\n\nHow can I help you?Enter please command: '
-
-#     contacts_data.append({'name': name, 'phones': [Phone(str(phone))]})
-#     return f'Contact added successfully\n\nHow can I help you?Enter please command: '
-
-
-@input_error
-def show_phone(name):  # функция для показа  номера телефона
-    name = Name(name.title())
-    for cont in contacts_data:
-        if name.value in cont['name']:
-            return f'{name.value} - {cont["phones"]}\nHow can I help you?Enter please command: '
-    raise KeyError
-
-
-# @input_error
-# # функция для добавления дня рождения контакта
-# def add_birthday(name, birthday):
-#     name = Name(name.title())
-#     for cont in contacts_data:
-#         if cont['name'] == name.value:
-#             item = {}
-#             for key, data in cont.items():
-#                 print(key, type(data) == list, data)
-#                 item[key] = map(lambda x: str(x.value), data) if type(data) == list else data.value
-
-#             entity = AddressBook(**item)
-#             cont['birthday'] = entity.add_birthday(birthday)
-#             return f'Contact birthday added successfully\nHow can I help you?Enter please command: '
-
-#     return f'Unfortunately, there is no such name here\nHow can I help you?Enter please command: '
-
-
-# @input_error
-# def add_email(name, email):  # функция для добавления email контакта
-#     name = Name(name.title())
-#     for cont in contacts_data:
-#         if cont['name'] == name.value:
-#             item = {}
-#             for key, data in cont.items():
-#                 print(key, type(data) == list, data)
-#                 item[key] = map(lambda x: str(x.value), data) if type(data) == list else data.value
-
-#             entity = AddressBook(**item)
-#             cont['email'] = entity.add_email(email)
-#             return f'Contact email added successfully\nHow can I help you?Enter please command: '
-
-#     return f'Unfortunately, there is no such name here\nHow can I help you?Enter please command: '
-
-
-# @input_error
-# # функция для добавления адреса контакта
-# def add_address(name, address):
-#     name = Name(name.title())
-
-#     for cont in contacts_data:
-#         if cont['name'] == name.value:
-#             item = {}
-#             for key, data in cont.items():
-#                 print(key, type(data) == list, data)
-#                 item[key] = map(lambda x: str(x.value), data) if type(data) == list else data.value
-
-#             entity = AddressBook(**item)
-#             cont['address'] = entity.add_address(address.title())
-#             return f'Contact address added successfully\nHow can I help you?Enter please command: '
-
-#     return f'Unfortunately, there is no such name here\nHow can I help you?Enter please command: '
-
 
 @input_error
 def show_contacts():  # функция для показа всех контактов
@@ -205,8 +117,8 @@ def save_contacts(local_file_name, local_contacts_data):
     return f'Data saved successfully\nHow can I help you?Enter please command: '
 
 
-@input_error
 # функция  для чтения  данных из  файла csv
+@input_error
 def read_contacts(local_file_name, data):
     with open(local_file_name, 'r', newline='', encoding='utf-8') as file_obj:
         reader = csv.DictReader(file_obj)
@@ -313,7 +225,6 @@ def convert_dates(contacts_data):
 
 # Функция вывода списка дней рождений через заданное число дней
 def upcoming_birthdays(days):
-    # days = int(days)
     new_contacts_data = convert_dates(contacts_data)
 
     today = datetime.now().date()
@@ -331,36 +242,13 @@ def upcoming_birthdays(days):
 
 
 # словарь для хранения  имен функций обработчиков команд:
-command_func = {'add': add_data, 'show-phone': show_phone,
-                'show all': show_contacts, 'exit': exit_program,
+command_func = {'add': add_data, 'show all': show_contacts, 'exit': exit_program,
                 'save': save_contacts, 'search': search, 
-                'read': read_contacts,'edit': edit_data, 'remove-contact': remove_contact, 'birthday-list': upcoming_birthdays}#,
-                #'birthday': add_birthday,'email': add_email, 'address': add_address,'hello': hello}
+                'read': read_contacts,'edit': edit_data, 'remove-contact': remove_contact, 'birthday-list': upcoming_birthdays}
 
 
-# главная функция:
-
+# функция работы бота адресной книги:
 def main(user_input):
-    # user_input = input(
-    #     'Enter hello for start, or one of the commands for finish: ')
-
-    # if user_input.lower().strip() == 'hello':
-    #     print(
-    #         'Hi, I am a contact book helper bot!\n\nI understand these commands:\n"add name phone" - add a new contact '
-    #         'to the book, instead of name and phone, enter the username and phone number, separated by a '
-    #         'space.\n"change name phone" - change contact phone number, instead of name and phone, enter the username '
-    #         'and phone number, separated by a space.\n"phone name" - show contact phone number, instead of name enter '
-    #         'the username.\n"birthday name data" - add/change data birthday contact, instead of name and data, '
-    #         'enter the username and birthday in format month-day-year,separated by a space.\n"email name data" - '
-    #         'add/change email contact, instead of name and data, enter the username and email,separated by a '
-    #         'space\n"address name data" - add/change address contact, instead of name and data, enter the username and '
-    #         'address in format "name street" "number building" "name town",separated by a space.\n"show all" - show all'
-    #         'contacts\n"save" - save data to file csv.\n"read" - read data from file csv.\n"search contact" - search '
-    #         'for contacts,instead of a contact, enter a request (name / part of a name or phone number / part of a '
-    #         'phone number).\n"hello" - for start bot.\n"good bye" or "close" or "exit" or "." - for finish '
-    #         'bot.\n"edit contact" - change contact, instead of contact, enter the name, phone, birthday, email and address '
-    #         'separated by a space\n"remove-contact" - delete contact, enter the name for delete '
-    #         '\n"birthday-list number" -  show a list of birthdays after a given number of days.\n')
         while True:
             try:
                 if user_input.lower().strip() in finish:
@@ -384,13 +272,3 @@ def main(user_input):
             except (ValueError, TypeError):
                 user_input = input(
                     f'You have entered an invalid command, please refine your query\nHow can I help you?Enter please command: ')
-    # elif user_input.lower().strip() in finish:
-    #     user_input_parser = parcer('exit')
-    #     command, arg = user_input_parser
-    #     print(command(*arg))
-    # else:
-    #     main(user_input)
-
-
-# if __name__ == "__main__":
-#     main()
